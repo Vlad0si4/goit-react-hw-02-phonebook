@@ -1,24 +1,18 @@
 import { Component } from 'react';
-import { PhoneBookForm } from './PhonebookForm/PhonebookForm';
 import { Contacts } from './Contacts/Contacts';
 import { Filters } from './Filters/Filters';
+
 import PropTypes from 'prop-types';
+import { PhonebookForm } from './PhonebookForm/PhonebookForm';
 
 export class App extends Component {
   state = {
     contacts: [],
-    name: '',
-    number: '',
     filter: '',
   };
 
-  handleChangeInput = ({ target }) => {
-    const { name, value } = target;
-    this.setState({ [name]: value });
-  };
-
-  handleAddItem = () => {
-    const { name, number, contacts } = this.state;
+  handleAddItem = ({ name, number }) => {
+    const { contacts } = this.state;
     const isExsist = contacts.find(
       word => word.name.toLowerCase() === name.toLowerCase()
     );
@@ -36,7 +30,6 @@ export class App extends Component {
         },
       ],
     }));
-    this.setState({ name: '', number: '' });
   };
   handleChangeFilter = ({ target }) => {
     this.setState({ filter: target.value });
@@ -57,18 +50,12 @@ export class App extends Component {
   };
 
   render() {
-    const { name, number, filter } = this.state;
+    const { filter } = this.state;
     const filterData = this.getFilterName();
 
     return (
       <>
-        <PhoneBookForm
-          handleChangeInput={this.handleChangeInput}
-          handleAddItem={this.handleAddItem}
-          nameUsers={name}
-          userNumber={number}
-          title={'Phonebook'}
-        />
+        <PhonebookForm addContact={this.handleAddItem} />
         <Filters
           contactFilter={this.handleChangeFilter}
           filterValue={filter}
@@ -88,7 +75,5 @@ App.propType = {
   state: PropTypes.objectOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   ).isRequired,
-  name: PropTypes.string.isRequired,
-  number: PropTypes.number.isRequired,
   filter: PropTypes.string.isRequired,
 };
